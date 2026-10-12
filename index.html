@@ -807,9 +807,18 @@
       }
     }
 
+    // -------------------------------------------------------------
+    // LOGIKA PENGECEKAN JAWABAN (FIXED: STRING LABEL MATCHING)
+    // -------------------------------------------------------------
     function checkAnswer(chosenLabel, chosenIndex) {
       if (gameMode === 'STAGE_1') {
-        if (chosenIndex === currentQuestionData.a) {
+        // Mengambil teks label jawaban benar langsung dari database
+        const correctAnswerLabel = currentQuestionData.options[currentQuestionData.a];
+        
+        // Membandingkan teks visual secara murni tanpa memedulikan urutan indeks di arena
+        const isCorrect = (chosenLabel.trim() === correctAnswerLabel.trim());
+
+        if (isCorrect) {
           playSfx('correct');
           correctCount++;
           createParticles(altarBox.x + 50, altarBox.y + 30, '#10b981', 30);
@@ -843,8 +852,9 @@
           }
         }
       } else {
+        // Stage Master Sequence
         const expectedTag = currentQuestionData.seq[currentSeqStep];
-        if (chosenLabel === expectedTag) {
+        if (chosenLabel.trim() === expectedTag.trim()) {
           playSfx('correct');
           currentSeqStep++;
           player.isCarrying = false;
